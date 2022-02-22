@@ -1,6 +1,9 @@
 package com.innowise.cli.file;
 
-public interface SavableInFile<T> {
+import java.io.Serializable;
+import java.nio.file.Path;
 
-    void saveInFile(T entity);
+public interface SavableInFile<T extends Serializable> {
+
+    void saveInFile(T entity, Path path);
 }

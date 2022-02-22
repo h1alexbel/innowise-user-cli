@@ -1,8 +1,9 @@
 package com.innowise.cli.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
-public class User implements ModelAttribute {
+public class User implements ModelAttribute, Serializable {
 
     private String firstName;
     private String lastName;
