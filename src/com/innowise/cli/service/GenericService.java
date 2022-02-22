@@ -8,8 +8,6 @@ public interface GenericService<T extends ModelAttribute, K> {
 
     T create(T entity);
 
-    void saveInFile(T entity);
-
     void update(T entity);
 
     List<T> findAll();
