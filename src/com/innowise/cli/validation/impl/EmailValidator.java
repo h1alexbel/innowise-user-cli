@@ -1,6 +1,6 @@
 package com.innowise.cli.validation.impl;
 
-import com.innowise.cli.util.ValidationErrorUtil;
+import com.innowise.cli.util.ValidationErrorUtils;
 import com.innowise.cli.validation.Error;
 import com.innowise.cli.validation.RegexBase;
 import com.innowise.cli.validation.ValidationResult;
@@ -16,13 +16,13 @@ public class EmailValidator implements Validator<String> {
         if (emailToValidate != null) {
             if (!isEmailValid(emailToValidate)) {
                 validationResult.add(Error.of(
-                        ValidationErrorUtil.EMAIL_NOT_VALID_CODE,
-                        ValidationErrorUtil.EMAIL_NOT_VALID_MESSAGE));
+                        ValidationErrorUtils.EMAIL_NOT_VALID_CODE,
+                        ValidationErrorUtils.EMAIL_NOT_VALID_MESSAGE));
             }
         } else {
             validationResult.add(Error.of(
-                    ValidationErrorUtil.EMAIL_IS_NULL_CODE,
-                    ValidationErrorUtil.EMAIL_IS_NULL_MESSAGE));
+                    ValidationErrorUtils.EMAIL_IS_NULL_CODE,
+                    ValidationErrorUtils.EMAIL_IS_NULL_MESSAGE));
         }
         return validationResult;
     }

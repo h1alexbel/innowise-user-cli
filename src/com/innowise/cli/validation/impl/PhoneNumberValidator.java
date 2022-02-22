@@ -1,6 +1,6 @@
 package com.innowise.cli.validation.impl;
 
-import com.innowise.cli.util.ValidationErrorUtil;
+import com.innowise.cli.util.ValidationErrorUtils;
 import com.innowise.cli.validation.Error;
 import com.innowise.cli.validation.RegexBase;
 import com.innowise.cli.validation.ValidationResult;
@@ -16,14 +16,14 @@ public class PhoneNumberValidator implements Validator<String> {
         if (passwordToValidate != null) {
             if (!isPhoneNumberValid(passwordToValidate)) {
                 validationResult.add(Error.of(
-                        ValidationErrorUtil.PHONE_NUMBER_NOT_VALID_CODE,
-                        ValidationErrorUtil.PHONE_NUMBER_NOT_VALID_MESSAGE
+                        ValidationErrorUtils.PHONE_NUMBER_NOT_VALID_CODE,
+                        ValidationErrorUtils.PHONE_NUMBER_NOT_VALID_MESSAGE
                 ));
             }
         } else {
             validationResult.add(Error.of(
-                    ValidationErrorUtil.PHONE_NUMBER_IS_NULL_CODE,
-                    ValidationErrorUtil.PHONE_NUMBER_IS_NULL_MESSAGE
+                    ValidationErrorUtils.PHONE_NUMBER_IS_NULL_CODE,
+                    ValidationErrorUtils.PHONE_NUMBER_IS_NULL_MESSAGE
             ));
         }
         return validationResult;

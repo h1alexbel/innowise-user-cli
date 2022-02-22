@@ -1,6 +1,6 @@
 package com.innowise.cli.util;
 
-public final class ValidationErrorUtil {
+public final class ValidationErrorUtils {
 
     public static final String EMAIL_IS_NULL_CODE = "email.is.null";
     public static final String EMAIL_IS_NULL_MESSAGE = "Email can not be null!";
@@ -11,7 +11,7 @@ public final class ValidationErrorUtil {
     public static final String PHONE_NUMBER_NOT_VALID_CODE = "phone.number.invalid";
     public static final String PHONE_NUMBER_NOT_VALID_MESSAGE = "Phone number is invalid!";
 
-    private ValidationErrorUtil() {
+    private ValidationErrorUtils() {
         throw new UnsupportedOperationException();
     }
 }
