@@ -1,17 +1,17 @@
 package com.innowise.cli.model;
 
-public class Role implements ModelAttribute{
+public class PhoneNumber implements ModelAttribute {
 
     private Long id;
-    private RoleType roleType;
+    private String phoneNumber;
     private User user;
 
-    public Role() {
+    public PhoneNumber() {
     }
 
-    public Role(Long id, RoleType role, User user) {
+    public PhoneNumber(Long id, String phoneNumber, User user) {
         this.id = id;
-        this.roleType = role;
+        this.phoneNumber = phoneNumber;
         this.user = user;
     }
 
@@ -21,7 +21,7 @@ public class Role implements ModelAttribute{
 
     public static class Builder {
         private Long id;
-        private RoleType roleType;
+        private String phoneNumber;
         private User user;
 
         public Builder id(Long id) {
@@ -29,8 +29,8 @@ public class Role implements ModelAttribute{
             return this;
         }
 
-        public Builder roleType(RoleType roleType) {
-            this.roleType = roleType;
+        public Builder phoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
             return this;
         }
 
@@ -39,8 +39,8 @@ public class Role implements ModelAttribute{
             return this;
         }
 
-        public Role build() {
-            return new Role(id, roleType, user);
+        public PhoneNumber build() {
+            return new PhoneNumber(id, phoneNumber, user);
         }
     }
 
@@ -52,12 +52,12 @@ public class Role implements ModelAttribute{
         this.id = id;
     }
 
-    public RoleType getRoleType() {
-        return roleType;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public User getUser() {
@@ -73,9 +73,9 @@ public class Role implements ModelAttribute{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Role role = (Role) o;
+        PhoneNumber that = (PhoneNumber) o;
 
-        return id != null ? id.equals(role.id) : role.id == null;
+        return id != null ? id.equals(that.id) : that.id == null;
     }
 
     @Override
@@ -85,9 +85,9 @@ public class Role implements ModelAttribute{
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "PhoneNumber{" +
                "id=" + id +
-               ", roleType=" + roleType +
+               ", phoneNumber='" + phoneNumber + '\'' +
                '}';
     }
 }

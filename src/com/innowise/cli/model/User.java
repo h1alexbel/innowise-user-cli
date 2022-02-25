@@ -5,16 +5,18 @@ import java.util.Set;
 
 public class User implements ModelAttribute, Serializable {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
     private Set<Role> roles;
-    private Set<String> phoneNumbers;
+    private Set<PhoneNumber> phoneNumbers;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, Set<Role> roles, Set<String> phoneNumbers) {
+    public User(Long id, String firstName, String lastName, String email, Set<Role> roles, Set<PhoneNumber> phoneNumbers) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -27,11 +29,17 @@ public class User implements ModelAttribute, Serializable {
     }
 
     public static class Builder {
+        private Long id;
         private String firstName;
         private String lastName;
         private String email;
         private Set<Role> roles;
-        private Set<String> phoneNumbers;
+        private Set<PhoneNumber> phoneNumbers;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder firstName(String firstName) {
             this.firstName = firstName;
@@ -53,14 +61,22 @@ public class User implements ModelAttribute, Serializable {
             return this;
         }
 
-        public Builder phoneNumbers(Set<String> phoneNumbers) {
+        public Builder phoneNumbers(Set<PhoneNumber> phoneNumbers) {
             this.phoneNumbers = phoneNumbers;
             return this;
         }
 
         public User build() {
-            return new User(firstName, lastName, email, roles, phoneNumbers);
+            return new User(id, firstName, lastName, email, roles, phoneNumbers);
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -95,11 +111,11 @@ public class User implements ModelAttribute, Serializable {
         this.roles = roles;
     }
 
-    public Set<String> getPhoneNumbers() {
+    public Set<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public void setPhoneNumbers(Set<String> phoneNumbers) {
+    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 
@@ -110,27 +126,19 @@ public class User implements ModelAttribute, Serializable {
 
         User user = (User) o;
 
-        if (firstName != null ? !firstName.equals(user.firstName) : user.firstName != null) return false;
-        if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (roles != null ? !roles.equals(user.roles) : user.roles != null) return false;
-        return phoneNumbers != null ? phoneNumbers.equals(user.phoneNumbers) : user.phoneNumbers == null;
+        return id != null ? id.equals(user.id) : user.id == null;
     }
 
     @Override
     public int hashCode() {
-        int result = firstName != null ? firstName.hashCode() : 0;
-        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (roles != null ? roles.hashCode() : 0);
-        result = 31 * result + (phoneNumbers != null ? phoneNumbers.hashCode() : 0);
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "User{" +
-               "firstName='" + firstName + '\'' +
+               "id=" + id +
+               ", firstName='" + firstName + '\'' +
                ", lastName='" + lastName + '\'' +
                ", email='" + email + '\'' +
                ", roles=" + roles +
