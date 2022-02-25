@@ -10,6 +10,10 @@ public class EmailValidator implements Validator<String> {
 
     private static final EmailValidator INSTANCE = new EmailValidator();
 
+    private EmailValidator() {
+
+    }
+
     @Override
     public ValidationResult validate(String emailToValidate) {
         ValidationResult validationResult = new ValidationResult();

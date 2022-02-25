@@ -10,6 +10,10 @@ public class PhoneNumberValidator implements Validator<String> {
 
     private static final PhoneNumberValidator INSTANCE = new PhoneNumberValidator();
 
+    private PhoneNumberValidator() {
+
+    }
+
     @Override
     public ValidationResult validate(String passwordToValidate) {
         ValidationResult validationResult = new ValidationResult();
