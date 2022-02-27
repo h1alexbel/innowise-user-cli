@@ -12,7 +12,7 @@ CREATE TABLE user_cli.phone_number
 (
     id      BIGSERIAL PRIMARY KEY,
     number  CHARACTER VARYING(13) NOT NULL,
-    user_id BIGINT REFERENCES user_cli.user_storage (id)
+    user_id BIGINT REFERENCES user_cli.user_data (id)
 );
 
 CREATE TABLE user_cli.role
@@ -23,7 +23,7 @@ CREATE TABLE user_cli.role
 
 CREATE TABLE user_cli.user_roles
 (
-    user_id BIGINT REFERENCES user_cli.user_storage (id),
-    role_id BIGINT REFERENCES user_cli.role_storage (id),
+    user_id BIGINT REFERENCES user_cli.user_data (id),
+    role_id BIGINT REFERENCES user_cli.role (id),
     PRIMARY KEY (user_id, role_id)
 );
