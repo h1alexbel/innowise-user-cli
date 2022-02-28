@@ -1,17 +1,19 @@
 package com.innowise.cli.model;
 
-public class Role implements ModelAttribute{
+public class Role implements ModelAttribute {
 
     private Long id;
     private RoleType roleType;
+    private Integer level;
     private User user;
 
     public Role() {
     }
 
-    public Role(Long id, RoleType role, User user) {
+    public Role(Long id, RoleType role, Integer level, User user) {
         this.id = id;
         this.roleType = role;
+        this.level = level;
         this.user = user;
     }
 
@@ -22,6 +24,7 @@ public class Role implements ModelAttribute{
     public static class Builder {
         private Long id;
         private RoleType roleType;
+        private Integer level;
         private User user;
 
         public Builder id(Long id) {
@@ -34,13 +37,18 @@ public class Role implements ModelAttribute{
             return this;
         }
 
+        public Builder level(Integer level) {
+            this.level = level;
+            return this;
+        }
+
         public Builder user(User user) {
             this.user = user;
             return this;
         }
 
         public Role build() {
-            return new Role(id, roleType, user);
+            return new Role(id, roleType, level, user);
         }
     }
 
@@ -58,6 +66,14 @@ public class Role implements ModelAttribute{
 
     public void setRoleType(RoleType roleType) {
         this.roleType = roleType;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public User getUser() {
@@ -88,6 +104,8 @@ public class Role implements ModelAttribute{
         return "Role{" +
                "id=" + id +
                ", roleType=" + roleType +
+               ", level=" + level +
+               ", user=" + user +
                '}';
     }
 }
