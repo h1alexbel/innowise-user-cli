@@ -3,7 +3,7 @@ package com.innowise.cli.model;
 public class PhoneNumber implements ModelAttribute {
 
     private Long id;
-    private String phoneNumber;
+    private String number;
     private User user;
 
     public PhoneNumber() {
@@ -11,7 +11,7 @@ public class PhoneNumber implements ModelAttribute {
 
     public PhoneNumber(Long id, String phoneNumber, User user) {
         this.id = id;
-        this.phoneNumber = phoneNumber;
+        this.number = phoneNumber;
         this.user = user;
     }
 
@@ -21,7 +21,7 @@ public class PhoneNumber implements ModelAttribute {
 
     public static class Builder {
         private Long id;
-        private String phoneNumber;
+        private String number;
         private User user;
 
         public Builder id(Long id) {
@@ -30,7 +30,7 @@ public class PhoneNumber implements ModelAttribute {
         }
 
         public Builder phoneNumber(String phoneNumber) {
-            this.phoneNumber = phoneNumber;
+            this.number = phoneNumber;
             return this;
         }
 
@@ -40,7 +40,7 @@ public class PhoneNumber implements ModelAttribute {
         }
 
         public PhoneNumber build() {
-            return new PhoneNumber(id, phoneNumber, user);
+            return new PhoneNumber(id, number, user);
         }
     }
 
@@ -52,12 +52,12 @@ public class PhoneNumber implements ModelAttribute {
         this.id = id;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getNumber() {
+        return number;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public User getUser() {
@@ -87,7 +87,7 @@ public class PhoneNumber implements ModelAttribute {
     public String toString() {
         return "PhoneNumber{" +
                "id=" + id +
-               ", phoneNumber='" + phoneNumber + '\'' +
+               ", number='" + number + '\'' +
                '}';
     }
 }

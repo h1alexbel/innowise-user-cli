@@ -205,7 +205,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement addPhoneToUserStatement = connection.prepareStatement(SQL_ADD_PHONE_TO_USER,
                      Statement.RETURN_GENERATED_KEYS)) {
-            addPhoneToUserStatement.setString(1, phoneNumber.getPhoneNumber());
+            addPhoneToUserStatement.setString(1, phoneNumber.getNumber());
             addPhoneToUserStatement.setString(2, user.getEmail());
             addPhoneToUserStatement.executeUpdate();
             ResultSet generatedKeys = addPhoneToUserStatement.getGeneratedKeys();
