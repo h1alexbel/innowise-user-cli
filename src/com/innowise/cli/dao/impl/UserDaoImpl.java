@@ -7,6 +7,7 @@ import com.innowise.cli.exception.DataBaseException;
 import com.innowise.cli.model.PhoneNumber;
 import com.innowise.cli.model.RoleType;
 import com.innowise.cli.model.User;
+import com.innowise.cli.util.ExceptionMessageUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -119,7 +120,7 @@ public class UserDaoImpl implements UserDao {
             }
             return user;
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -134,7 +135,7 @@ public class UserDaoImpl implements UserDao {
             updateStatement.setLong(4, user.getId());
             updateStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -149,7 +150,7 @@ public class UserDaoImpl implements UserDao {
             }
             return users;
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -175,7 +176,7 @@ public class UserDaoImpl implements UserDao {
             return deleteUserStatement.executeUpdate() == 1;
         } catch (SQLException e) {
             rollbackTransaction(connection);
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         } finally {
             closeConnection(connection);
             closeStatement(deletePhoneNumberStatement);
@@ -196,7 +197,7 @@ public class UserDaoImpl implements UserDao {
             }
             return Optional.ofNullable(user);
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -215,7 +216,7 @@ public class UserDaoImpl implements UserDao {
             }
             return phoneNumber;
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -227,7 +228,7 @@ public class UserDaoImpl implements UserDao {
             addRoleToUserStatement.setString(2, roleType.toString());
             addRoleToUserStatement.executeUpdate();
         } catch (SQLException e) {
-            throw new DaoException(e);
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
     }
 
