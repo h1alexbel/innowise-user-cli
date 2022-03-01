@@ -14,6 +14,10 @@ public class EmailValidator implements Validator<String> {
 
     }
 
+    public static EmailValidator getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public ValidationResult validate(String emailToValidate) {
         ValidationResult validationResult = new ValidationResult();
@@ -33,9 +37,5 @@ public class EmailValidator implements Validator<String> {
 
     private boolean isEmailValid(String email) {
         return email.matches(RegexBase.EMAIL_REGEX);
-    }
-
-    public static EmailValidator getInstance() {
-        return INSTANCE;
     }
 }
