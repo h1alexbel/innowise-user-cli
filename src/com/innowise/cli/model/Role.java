@@ -105,7 +105,6 @@ public class Role implements ModelAttribute {
                "id=" + id +
                ", roleType=" + roleType +
                ", level=" + level +
-               ", user=" + user +
                '}';
     }
 }
