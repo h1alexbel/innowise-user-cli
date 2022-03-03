@@ -1,7 +1,7 @@
 package com.innowise.cli.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 public class User implements ModelAttribute, Serializable {
 
@@ -9,13 +9,15 @@ public class User implements ModelAttribute, Serializable {
     private String firstName;
     private String lastName;
     private String email;
-    private Set<Role> roles;
-    private Set<PhoneNumber> phoneNumbers;
+    private List<Role> roles;
+    private List<PhoneNumber> phoneNumbers;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, Set<Role> roles, Set<PhoneNumber> phoneNumbers) {
+    public User(Long id, String firstName, String lastName, String email,
+                List<Role> roles,
+                List<PhoneNumber> phoneNumbers) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -33,8 +35,8 @@ public class User implements ModelAttribute, Serializable {
         private String firstName;
         private String lastName;
         private String email;
-        private Set<Role> roles;
-        private Set<PhoneNumber> phoneNumbers;
+        private List<Role> roles;
+        private List<PhoneNumber> phoneNumbers;
 
         public Builder id(Long id) {
             this.id = id;
@@ -56,12 +58,12 @@ public class User implements ModelAttribute, Serializable {
             return this;
         }
 
-        public Builder roles(Set<Role> roles) {
+        public Builder roles(List<Role> roles) {
             this.roles = roles;
             return this;
         }
 
-        public Builder phoneNumbers(Set<PhoneNumber> phoneNumbers) {
+        public Builder phoneNumbers(List<PhoneNumber> phoneNumbers) {
             this.phoneNumbers = phoneNumbers;
             return this;
         }
@@ -103,19 +105,19 @@ public class User implements ModelAttribute, Serializable {
         this.email = email;
     }
 
-    public Set<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
-    public Set<PhoneNumber> getPhoneNumbers() {
+    public List<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 
-    public void setPhoneNumbers(Set<PhoneNumber> phoneNumbers) {
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
     }
 
@@ -141,8 +143,6 @@ public class User implements ModelAttribute, Serializable {
                ", firstName='" + firstName + '\'' +
                ", lastName='" + lastName + '\'' +
                ", email='" + email + '\'' +
-               ", roles=" + roles +
-               ", phoneNumbers=" + phoneNumbers +
                '}';
     }
 }

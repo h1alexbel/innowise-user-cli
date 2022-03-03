@@ -88,6 +88,7 @@ public class PhoneNumber implements ModelAttribute {
         return "PhoneNumber{" +
                "id=" + id +
                ", number='" + number + '\'' +
+               ", user=" + user +
                '}';
     }
 }
