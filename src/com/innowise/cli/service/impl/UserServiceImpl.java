@@ -5,7 +5,7 @@ import com.innowise.cli.exception.DaoException;
 import com.innowise.cli.exception.ServiceException;
 import com.innowise.cli.file.SavableInFile;
 import com.innowise.cli.model.PhoneNumber;
-import com.innowise.cli.model.RoleType;
+import com.innowise.cli.model.Role;
 import com.innowise.cli.model.User;
 import com.innowise.cli.service.UserService;
 import com.innowise.cli.util.ExceptionMessageUtils;
@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,18 +53,6 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
     }
 
     @Override
-    public Optional<User> findUserById(Long id) throws ServiceException {
-        if (id != null) {
-            try {
-                return userDao.findUserById(id);
-            } catch (DaoException e) {
-                throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
     public void updateUser(User user) throws ServiceException {
         if (user != null) {
             try {
@@ -71,15 +60,6 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
             } catch (DaoException e) {
                 throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
             }
-        }
-    }
-
-    @Override
-    public List<User> findAll() throws ServiceException {
-        try {
-            return userDao.findAll();
-        } catch (DaoException e) {
-            throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -97,6 +77,51 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
     }
 
     @Override
+    public Optional<User> getById(Long id) throws ServiceException {
+        if (id != null) {
+            try {
+                return userDao.findUserById(id);
+            } catch (DaoException e) {
+                throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<User> list() throws ServiceException {
+        try {
+            return userDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public List<Role> getUserRoles(Long userId) throws ServiceException {
+        if (userId != null) {
+            try {
+                return userDao.findRolesByUserId(userId);
+            } catch (DaoException e) {
+                throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<PhoneNumber> getUserPhoneNumbers(Long userId) throws ServiceException {
+        if (userId != null) {
+            try {
+                return userDao.findPhoneNumbersByUserId(userId);
+            } catch (DaoException e) {
+                throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     public void addPhoneNumberToUser(PhoneNumber phoneNumber, User user) throws ServiceException {
         if (phoneNumber != null && user != null) {
             try {
@@ -108,10 +133,10 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
     }
 
     @Override
-    public void addRoleToUser(RoleType roleType, User user) throws ServiceException {
-        if (roleType != null && user != null) {
+    public void addRoleToUser(Role role, User user) throws ServiceException {
+        if (role != null && user != null) {
             try {
-                userDao.addRoleToUser(roleType, user);
+                userDao.addRoleToUser(role, user);
             } catch (DaoException e) {
                 throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
             }
