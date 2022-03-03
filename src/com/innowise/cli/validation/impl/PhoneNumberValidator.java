@@ -1,12 +1,13 @@
 package com.innowise.cli.validation.impl;
 
+import com.innowise.cli.model.PhoneNumber;
 import com.innowise.cli.util.ValidationErrorUtils;
 import com.innowise.cli.validation.Error;
 import com.innowise.cli.validation.RegexBase;
 import com.innowise.cli.validation.ValidationResult;
 import com.innowise.cli.validation.Validator;
 
-public class PhoneNumberValidator implements Validator<String> {
+public class PhoneNumberValidator implements Validator<PhoneNumber> {
 
     private static final PhoneNumberValidator INSTANCE = new PhoneNumberValidator();
 
@@ -14,11 +15,15 @@ public class PhoneNumberValidator implements Validator<String> {
 
     }
 
+    public static PhoneNumberValidator getInstance() {
+        return INSTANCE;
+    }
+
     @Override
-    public ValidationResult validate(String passwordToValidate) {
+    public ValidationResult validate(PhoneNumber phoneNumber) {
         ValidationResult validationResult = new ValidationResult();
-        if (passwordToValidate != null) {
-            if (!isPhoneNumberValid(passwordToValidate)) {
+        if (phoneNumber != null && phoneNumber.getNumber() != null) {
+            if (!isPhoneNumberValid(phoneNumber.getNumber())) {
                 validationResult.add(Error.of(
                         ValidationErrorUtils.PHONE_NUMBER_NOT_VALID_CODE,
                         ValidationErrorUtils.PHONE_NUMBER_NOT_VALID_MESSAGE
@@ -35,9 +40,5 @@ public class PhoneNumberValidator implements Validator<String> {
 
     private boolean isPhoneNumberValid(String password) {
         return password.matches(RegexBase.PHONE_REGEX);
-    }
-
-    public static PhoneNumberValidator getInstance() {
-        return INSTANCE;
     }
 }
