@@ -3,8 +3,8 @@ package com.innowise.cli.dao.impl;
 import com.innowise.cli.dao.UserDao;
 import com.innowise.cli.dbconnection.ConnectionManager;
 import com.innowise.cli.exception.DaoException;
-import com.innowise.cli.exception.DataBaseException;
 import com.innowise.cli.model.PhoneNumber;
+import com.innowise.cli.model.Role;
 import com.innowise.cli.model.RoleType;
 import com.innowise.cli.model.User;
 import com.innowise.cli.util.ExceptionMessageUtils;
@@ -44,18 +44,11 @@ public class UserDaoImpl implements UserDao {
             """;
 
     private static final String SQL_FIND_ALL = """
-            SELECT u.id         AS id,
-                   u.last_name  AS last_name,
+            SELECT u.last_name  AS last_name,
+                   u.id         AS id,
                    u.first_name AS first_name,
-                   u.email      AS email,
-                   r.id         AS r_id,
-                   r.role_type  AS r_role,
-                   r.role_level AS r_level,
-                   pn.number
+                   u.email      AS email
             FROM user_cli.user_data u
-                     LEFT JOIN user_cli.user_roles ur ON u.id = ur.user_id
-                     LEFT JOIN user_cli.role r ON r.id = ur.role_id
-                     LEFT JOIN user_cli.phone_number pn ON u.id = pn.user_id
             ORDER BY u.id DESC
             """;
 
@@ -66,25 +59,17 @@ public class UserDaoImpl implements UserDao {
             """;
 
     private static final String SQL_FIND_BY_ID = """
-            SELECT u.id         AS id,
-                   u.last_name  AS last_name,
+            SELECT u.last_name  AS last_name,
+                   u.id         AS id,
                    u.first_name AS first_name,
-                   u.email      AS email,
-                   r.id         AS r_id,
-                   r.role_type  AS r_role,
-                   r.role_level AS r_level,
-                   pn.number
+                   u.email      AS email
             FROM user_cli.user_data u
-                     LEFT JOIN user_cli.user_roles ur ON u.id = ur.user_id
-                     LEFT JOIN user_cli.role r ON r.id = ur.role_id
-                     LEFT JOIN user_cli.phone_number pn ON u.id = pn.user_id
             WHERE u.id = ?
             """;
 
     private static final String SQL_ADD_USER_ROLE = """
-            INSERT INTO user_cli.user_roles(user_id, role_id)
-            VALUES ((SELECT u.id FROM user_cli.user_data u WHERE u.email = ?),
-                    (SELECT r.id FROM user_cli.role r WHERE r.role_type = ?));
+            INSERT INTO user_cli.role(role_type, role_level, user_id)
+            VALUES (?, ?, (SELECT id FROM user_cli.user_data WHERE email = ?));
             """;
 
     private static final String SQL_ADD_PHONE_TO_USER = """
@@ -100,8 +85,33 @@ public class UserDaoImpl implements UserDao {
 
     private static final String SQL_DELETE_USER_ROLE = """
             DELETE
-            FROM user_cli.user_roles
+            FROM user_cli.role
             WHERE user_id = ?
+            """;
+
+    private static final String SQL_FIND_ROLES_BY_USER_ID = """
+            SELECT r.id         AS r_id,
+                   r.role_level AS role_level,
+                   r.role_type  AS role_type,
+                   u.id         AS id,
+                   u.first_name AS first_name,
+                   u.last_name  AS last_name,
+                   u.email      AS email
+            FROM user_cli.role r
+                     JOIN user_cli.user_data u ON u.id = r.user_id
+            WHERE u.id = ?
+            """;
+
+    private static final String SQL_FIND_PHONE_NUMBERS_BY_USER_ID = """
+            SELECT p.id         AS p_id,
+                   p.number     AS number,
+                   u.id         AS id,
+                   u.first_name AS first_name,
+                   u.last_name  AS last_name,
+                   u.email      AS email
+            FROM user_cli.phone_number p
+                     JOIN user_cli.user_data u ON u.id = p.user_id
+            WHERE u.id = ?      
             """;
 
     @Override
@@ -125,7 +135,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-
     public void update(User user) throws DaoException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement updateStatement = connection.prepareStatement(SQL_UPDATE_USER)) {
@@ -155,14 +164,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public boolean deleteById(Long id) throws DaoException { // TODO: 28.02.22 autoCommitFalse problem 
+    public boolean deleteById(Long id) throws DaoException {
         Connection connection = null;
         PreparedStatement deleteUserStatement = null;
         PreparedStatement deleteRoleStatement = null;
         PreparedStatement deletePhoneNumberStatement = null;
         try {
             connection = ConnectionManager.getConnection();
-            connection.setAutoCommit(false);
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             deleteUserStatement = connection.prepareStatement(SQL_DELETE_BY_ID);
             deleteRoleStatement = connection.prepareStatement(SQL_DELETE_USER_ROLE);
@@ -172,10 +180,8 @@ public class UserDaoImpl implements UserDao {
             deleteRoleStatement.setLong(1, id);
             deleteRoleStatement.executeUpdate();
             deleteUserStatement.setLong(1, id);
-            connection.commit();
             return deleteUserStatement.executeUpdate() == 1;
         } catch (SQLException e) {
-            rollbackTransaction(connection);
             throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         } finally {
             closeConnection(connection);
@@ -213,6 +219,7 @@ public class UserDaoImpl implements UserDao {
             if (generatedKeys.next()) {
                 long phoneNumberId = generatedKeys.getLong("id");
                 phoneNumber.setId(phoneNumberId);
+                phoneNumber.setUser(user);
             }
             return phoneNumber;
         } catch (SQLException e) {
@@ -221,12 +228,54 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void addRoleToUser(RoleType roleType, User user) throws DaoException {
+    public Role addRoleToUser(Role role, User user) throws DaoException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement addRoleToUserStatement = connection.prepareStatement(SQL_ADD_USER_ROLE)) {
-            addRoleToUserStatement.setString(1, user.getEmail());
-            addRoleToUserStatement.setString(2, roleType.toString());
-            addRoleToUserStatement.executeUpdate();
+             PreparedStatement addRoleStatement = connection.prepareStatement(SQL_ADD_USER_ROLE,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            addRoleStatement.setString(1, role.getRoleType().name());
+            addRoleStatement.setInt(2, role.getLevel());
+            addRoleStatement.setString(3, user.getEmail());
+            addRoleStatement.executeUpdate();
+            ResultSet generatedKeys = addRoleStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                long roleId = generatedKeys.getLong("id");
+                role.setId(roleId);
+                role.setUser(user);
+            }
+            return role;
+        } catch (SQLException e) {
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public List<Role> findRolesByUserId(Long userId) throws DaoException {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement allRolesStatement = connection.prepareStatement(SQL_FIND_ROLES_BY_USER_ID)) {
+            allRolesStatement.setLong(1, userId);
+            ResultSet resultSet = allRolesStatement.executeQuery();
+            List<Role> roles = new ArrayList<>();
+            while (resultSet.next()) {
+                roles.add(buildRole(resultSet));
+            }
+            return roles;
+        } catch (SQLException e) {
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public List<PhoneNumber> findPhoneNumbersByUserId(Long userId) throws DaoException {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement allPhoneNumbersStatement =
+                     connection.prepareStatement(SQL_FIND_PHONE_NUMBERS_BY_USER_ID)) {
+            allPhoneNumbersStatement.setLong(1, userId);
+            ResultSet resultSet = allPhoneNumbersStatement.executeQuery();
+            List<PhoneNumber> phoneNumbers = new ArrayList<>();
+            while (resultSet.next()) {
+                phoneNumbers.add(buildPhoneNumber(resultSet));
+            }
+            return phoneNumbers;
         } catch (SQLException e) {
             throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }
@@ -238,6 +287,25 @@ public class UserDaoImpl implements UserDao {
                 .email(resultSet.getString("email"))
                 .firstName(resultSet.getString("first_name"))
                 .lastName(resultSet.getString("last_name"))
+                .build();
+    }
+
+    private PhoneNumber buildPhoneNumber(ResultSet resultSet) throws SQLException {
+        User user = buildUser(resultSet);
+        return PhoneNumber.builder()
+                .id(resultSet.getLong("p_id"))
+                .phoneNumber(resultSet.getString("number"))
+                .user(user)
+                .build();
+    }
+
+    private Role buildRole(ResultSet resultSet) throws SQLException {
+        User user = buildUser(resultSet);
+        return Role.builder()
+                .id(resultSet.getLong("r_id"))
+                .level(resultSet.getInt("role_level"))
+                .roleType(RoleType.valueOf(resultSet.getString("role_type")))
+                .user(user)
                 .build();
     }
 
@@ -257,16 +325,6 @@ public class UserDaoImpl implements UserDao {
                 connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    private void rollbackTransaction(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.rollback();
-            } catch (SQLException e) {
-                throw new DataBaseException(e);
             }
         }
     }
