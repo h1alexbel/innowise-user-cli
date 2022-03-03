@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
 
     private static final UserServiceImpl INSTANCE = new UserServiceImpl();
     private final UserDaoImpl userDao = UserDaoImpl.getInstance();
+    private static final int MAX_USER_PHONES_SIZE = 3;
 
     private UserServiceImpl() {
 
@@ -74,6 +75,19 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean isUserHasRightsToAddPhoneNumber(User user) throws ServiceException {
+        boolean flag = false;
+        if (user != null && user.getId() != null) {
+            if (getUserPhoneSize(user.getId()) >= MAX_USER_PHONES_SIZE) {
+                return false;
+            } else {
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     @Override
@@ -140,6 +154,14 @@ public class UserServiceImpl implements UserService, SavableInFile<User> {
             } catch (DaoException e) {
                 throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
             }
+        }
+    }
+
+    private int getUserPhoneSize(Long userId) throws ServiceException {
+        try {
+            return userDao.findPhoneNumbersByUserId(userId).size();
+        } catch (DaoException e) {
+            throw new ServiceException(ExceptionMessageUtils.SERVICE_EXCEPTION_MESSAGE, e);
         }
     }
 }

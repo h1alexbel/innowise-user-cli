@@ -24,6 +24,8 @@ public interface UserService {
 
     boolean deleteUserById(Long id) throws ServiceException;
 
+    boolean isUserHasRightsToAddPhoneNumber(User user) throws ServiceException;
+
     void addPhoneNumberToUser(PhoneNumber phoneNumber, User user) throws ServiceException;
 
     void addRoleToUser(Role role, User user) throws ServiceException;
