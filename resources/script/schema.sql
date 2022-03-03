@@ -18,7 +18,7 @@ CREATE TABLE user_cli.phone_number
 CREATE TABLE user_cli.role
 (
     id         BIGSERIAL PRIMARY KEY,
-    role_type  CHARACTER VARYING(16) UNIQUE NOT NULL,
-    role_level INT                          NOT NULL,
+    role_type  CHARACTER VARYING(16) NOT NULL,
+    role_level INT                   NOT NULL,
     user_id    BIGINT REFERENCES user_cli.user_data (id)
 );
