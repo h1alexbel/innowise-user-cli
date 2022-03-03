@@ -2,6 +2,7 @@ package com.innowise.cli.util;
 
 public final class OperationUtils {
 
+    public static final String WELCOME_MESSAGE = "Welcome to USER-CLI, You have some options:";
     public static final String CREATE_USER = "1.Create user";
     public static final String SAVE_IN_FILE = "2.Save user in file";
     public static final String FIND_ALL = "3.Find all users";

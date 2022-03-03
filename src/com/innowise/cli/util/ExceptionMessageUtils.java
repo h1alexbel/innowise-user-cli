@@ -7,6 +7,7 @@ public final class ExceptionMessageUtils {
     public static final String CONNECTION_ERROR = "Driver can not build connection";
     public static final String DAO_EXCEPTION_MESSAGE = "Dao layer exception message";
     public static final String SERVICE_EXCEPTION_MESSAGE = "Service layer exception message";
+    public static final String COMMAND_EXCEPTION_MESSAGE = "Command layer exception message";
 
     private ExceptionMessageUtils() {
         throw new UnsupportedOperationException();
