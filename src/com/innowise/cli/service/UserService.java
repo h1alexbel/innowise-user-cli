@@ -3,6 +3,7 @@ package com.innowise.cli.service;
 import com.innowise.cli.exception.ServiceException;
 import com.innowise.cli.model.PhoneNumber;
 import com.innowise.cli.model.Role;
+import com.innowise.cli.model.RoleType;
 import com.innowise.cli.model.User;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface UserService {
 
     List<User> list() throws ServiceException;
 
+    boolean isUserWithEmailExists(String email) throws ServiceException;
+
     List<Role> getUserRoles(Long userId) throws ServiceException;
 
     List<PhoneNumber> getUserPhoneNumbers(Long userId) throws ServiceException;
@@ -27,6 +30,8 @@ public interface UserService {
     boolean isUserHasRightsToAddPhoneNumber(User user) throws ServiceException;
 
     void addPhoneNumberToUser(PhoneNumber phoneNumber, User user) throws ServiceException;
+
+    boolean isUserHasRightsToAddRole(User user, RoleType roleTypeToAdd) throws ServiceException;
 
     void addRoleToUser(Role role, User user) throws ServiceException;
 }
