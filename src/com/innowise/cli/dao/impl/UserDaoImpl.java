@@ -67,6 +67,15 @@ public class UserDaoImpl implements UserDao {
             WHERE u.id = ?
             """;
 
+    private static final String SQL_FIND_USER_BY_EMAIL = """
+            SELECT u.last_name  AS last_name,
+                   u.id         AS id,
+                   u.first_name AS first_name,
+                   u.email      AS email
+            FROM user_cli.user_data u
+            WHERE u.email LIKE ?
+            """;
+
     private static final String SQL_ADD_USER_ROLE = """
             INSERT INTO user_cli.role(role_type, role_level, user_id)
             VALUES (?, ?, (SELECT id FROM user_cli.user_data WHERE email = ?));
@@ -243,6 +252,22 @@ public class UserDaoImpl implements UserDao {
                 role.setUser(user);
             }
             return role;
+        } catch (SQLException e) {
+            throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) throws DaoException {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement findUserByIdStatement = connection.prepareStatement(SQL_FIND_USER_BY_EMAIL)) {
+            findUserByIdStatement.setString(1, email);
+            ResultSet resultSet = findUserByIdStatement.executeQuery();
+            User user = null;
+            while (resultSet.next()) {
+                user = buildUser(resultSet);
+            }
+            return Optional.ofNullable(user);
         } catch (SQLException e) {
             throw new DaoException(ExceptionMessageUtils.DAO_EXCEPTION_MESSAGE, e);
         }

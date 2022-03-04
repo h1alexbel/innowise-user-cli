@@ -6,12 +6,15 @@ import com.innowise.cli.model.Role;
 import com.innowise.cli.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao extends GenericDao<User, Long> {
 
     PhoneNumber addPhoneNumberToUser(PhoneNumber phoneNumber, User user) throws DaoException;
 
     Role addRoleToUser(Role role, User user) throws DaoException;
+
+    Optional<User> findByEmail(String email) throws DaoException;
 
     List<Role> findRolesByUserId(Long userId) throws DaoException;
 
