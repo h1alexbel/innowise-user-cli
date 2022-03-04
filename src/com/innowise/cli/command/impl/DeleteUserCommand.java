@@ -15,6 +15,7 @@ public class DeleteUserCommand implements Command {
 
     @Override
     public void execute(Scanner scanner) throws CommandException {
+        System.out.println(ConsoleMessagesUtils.ENTER_ID_MESSAGE);
         long id = Long.parseLong(scanner.next());
         try {
             boolean isDeleted = userService.deleteUserById(id);
